@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#0F766E" />
+<title>FieldSales Pro — Wholesaler Rep</title>
+<link rel="manifest" href="manifest.json" />
+<style>
+  :root{
+    --navy:#1F3764; --teal:#0F766E; --teal-d:#0b5b55; --grey:#595959;
+    --bg:#F2F5F8; --card:#FFFFFF; --line:#E2E8F0; --amber:#F59E0B; --red:#DC2626; --green:#16A34A;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:#1f2937;font-size:15px;}
+  .app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;padding-bottom:72px;}
+  header{background:linear-gradient(135deg,var(--navy),var(--teal));color:#fff;padding:10px 14px;position:sticky;top:0;z-index:10;}
+  header .htop{display:flex;align-items:center;gap:10px}
+  header .brandlogo{height:34px;width:auto;flex:0 0 auto;background:#fff;border-radius:6px;padding:2px 4px}
+  header h1{margin:0;font-size:16px;font-weight:700;letter-spacing:.2px;line-height:1.1}
+  header p{margin:1px 0 0;font-size:11px;opacity:.85}
+  .pwr{font-size:10px;opacity:.7;margin-top:1px}
+  .view{padding:14px 14px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+  .stat .n{font-size:20px;font-weight:800;color:var(--navy)}
+  .stat .l{font-size:11px;color:var(--grey);margin-top:2px}
+  .stat.amber .n{color:var(--amber)} .stat.red .n{color:var(--red)} .stat.green .n{color:var(--green)}
+  label{display:block;font-size:12px;color:var(--grey);margin:8px 0 4px;font-weight:600}
+  input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fff;color:#111}
+  input:focus,select:focus{outline:none;border-color:var(--teal)}
+  button{font-family:inherit;cursor:pointer;border:none;border-radius:10px;font-size:15px;font-weight:700}
+  .btn-primary{background:var(--teal);color:#fff;padding:13px;width:100%}
+  .btn-primary:active{background:var(--teal-d)}
+  .btn-ghost{background:#fff;color:var(--teal);border:1px solid var(--teal);padding:10px;width:100%}
+  .btn-sm{padding:8px 10px;font-size:13px}
+  .btn-danger{background:#fff;color:var(--red);border:1px solid var(--red);padding:8px 10px;font-size:13px}
+  .row{display:flex;gap:8px;align-items:center}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700}
+  .pill.cash{background:#E7F6EC;color:var(--green)}
+  .pill.part{background:#FEF3E2;color:#B45309}
+  .pill.credit{background:#FDE8E8;color:var(--red)}
+  .pill.ok{background:#E7F6EC;color:var(--green)}
+  .pill.over{background:#FDE8E8;color:var(--red)}
+  .pill.due{background:#FEF3E2;color:#B45309}
+  .list-item{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+  .list-item:last-child{border-bottom:none}
+  .li-name{font-weight:700;font-size:14px}
+  .li-sub{font-size:12px;color:var(--grey)}
+  .li-bal{font-weight:800;font-size:15px}
+  .item-row{display:grid;grid-template-columns:1fr 64px 70px;gap:6px;margin-bottom:6px;align-items:end}
+  .item-row select,.item-row input{padding:9px 8px;font-size:13px}
+  .line-total{font-size:12px;color:var(--grey);text-align:right;margin-top:-2px}
+  .section-title{font-size:13px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.4px;margin:4px 0 8px}
+  .empty{text-align:center;color:var(--grey);padding:30px 10px;font-size:14px}
+  nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:1px solid var(--line);display:flex;z-index:20}
+  nav button{flex:1;background:#fff;color:var(--grey);padding:8px 2px 10px;font-size:11px;font-weight:600;border-radius:0;display:flex;flex-direction:column;align-items:center;gap:2px}
+  nav button .ic{font-size:18px;line-height:1}
+  nav button.active{color:var(--teal)}
+  nav button.active .ic{transform:scale(1.12)}
+  .toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;z-index:50;pointer-events:none}
+  .toast.show{opacity:.95}
+  .hidden{display:none}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40;display:none;align-items:flex-end;justify-content:center}
+  .modal-bg.show{display:flex}
+  .modal{background:#fff;width:100%;max-width:480px;border-radius:18px 18px 0 0;padding:18px;max-height:86vh;overflow:auto}
+  .modal h3{margin:0 0 12px;color:var(--navy)}
+  .seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:4px}
+  .seg button{flex:1;background:#fff;color:var(--grey);padding:11px;font-size:14px;font-weight:700;border-radius:0}
+  .seg button.active{background:var(--teal);color:#fff}
+  .tiny{font-size:11px;color:var(--grey)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="htop">
+      <img class="brandlogo" src="logo.svg" alt="Providers Consultancy" />
+      <div>
+        <h1>FieldSales Pro</h1>
+        <p id="repLine">Wholesaler Sales Rep · Demo (Nestlé GH)</p>
+        <div class="pwr">Powered by Providers Consultancy</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- DASHBOARD -->
+  <section class="view" id="view-dash">
+    <div class="grid2">
+      <div class="stat"><div class="n" id="dSales">0</div><div class="l">Sales Today (GHS)</div></div>
+      <div class="stat green"><div class="n" id="dCash">0</div><div class="l">Cash Collected</div></div>
+      <div class="stat amber"><div class="n" id="dCredit">0</div><div class="l">Credit Given</div></div>
+      <div class="stat red"><div class="n" id="dOut">0</div><div class="l">Outstanding</div></div>
+    </div>
+    <button class="btn-primary" id="dashDaily" style="margin-bottom:12px">📅 Today's Report</button>
+    <div class="card">
+      <div class="section-title">Top Debtors</div>
+      <div id="topDebtors"><div class="empty">No outstanding balances.</div></div>
+    </div>
+    <div class="card">
+      <div class="section-title">This Week Snapshot</div>
+      <div class="row" style="justify-content:space-between"><span class="li-sub">Sunday settlement due</span><span class="li-bal" id="wkDue">GHS 0</span></div>
+      <div class="row" style="justify-content:space-between"><span class="li-sub">Monday remittance (cash wk)</span><span class="li-bal" id="wkRemit">GHS 0</span></div>
+    </div>
+  </section>
+
+  <!-- NEW SALE -->
+  <section class="view hidden" id="view-sale">
+    <div class="card">
+      <div class="section-title">New Sale</div>
+      <label>Retailer</label>
+      <select id="sRetailer"></select>
+      <label>Products</label>
+      <div id="sItems"></div>
+      <button class="btn-ghost btn-sm" id="addItem" style="margin-top:6px">+ Add product</button>
+      <div class="row" style="justify-content:space-between;margin-top:10px">
+        <span class="li-sub">Total</span><span class="li-bal" id="sTotal">GHS 0</span>
+      </div>
+      <label>Payment</label>
+      <div class="seg" id="sMode">
+        <button data-m="cash" class="active">Cash</button>
+        <button data-m="part">Part</button>
+        <button data-m="credit">Credit</button>
+      </div>
+      <div id="paidWrap" class="hidden">
+        <label>Amount Paid (GHS)</label>
+        <input id="sPaid" type="number" min="0" value="0" />
+      </div>
+      <label>Credit terms (days)</label>
+      <input id="sTerms" type="number" value="7" />
+      <button class="btn-primary" id="saveSale" style="margin-top:12px">Save Sale</button>
+    </div>
+  </section>
+
+  <!-- RETAILERS -->
+  <section class="view hidden" id="view-ret">
+    <div class="card">
+      <button class="btn-ghost btn-sm" id="addRet">+ New Retailer</button>
+    </div>
+    <div class="card" id="retList"></div>
+  </section>
+
+  <!-- LEDGER -->
+  <section class="view hidden" id="view-led">
+    <div class="card">
+      <label>Filter</label>
+      <div class="seg" id="ledFilter">
+        <button data-f="all" class="active">All</button>
+        <button data-f="over">Overdue</button>
+        <button data-f="due">Due Soon</button>
+      </div>
+    </div>
+    <div class="card" id="ledList"></div>
+  </section>
+
+  <!-- MORE -->
+  <section class="view hidden" id="view-more">
+    <div class="card">
+      <div class="section-title">Reports</div>
+      <button class="btn-ghost btn-sm" id="rDaily" style="margin-bottom:8px">Daily Report (by date)</button>
+      <button class="btn-ghost btn-sm" id="rSunday" style="margin-bottom:8px">Sunday Settlement List</button>
+      <button class="btn-ghost btn-sm" id="rMonday" style="margin-bottom:8px">Monday Remittance Summary</button>
+      <button class="btn-ghost btn-sm" id="rAll" style="margin-bottom:8px">Full Ledger Report</button>
+    </div>
+    <div class="card">
+      <div class="section-title">Data</div>
+      <button class="btn-ghost btn-sm" id="expJson" style="margin-bottom:8px">Export Backup (JSON)</button>
+      <button class="btn-ghost btn-sm" id="expCsv" style="margin-bottom:8px">Export Sales (CSV)</button>
+      <button class="btn-ghost btn-sm" id="impJson">Import Backup (JSON)</button>
+      <p class="tiny" style="margin-top:8px">Prototype runs 100% offline on your phone. Data is stored in this browser. For live sync across devices, connect a Google Sheet (see README).</p>
+    </div>
+    <div class="card">
+      <div class="section-title">Profile</div>
+      <button class="btn-ghost btn-sm" id="editProfile" style="margin-bottom:8px">My Profile</button>
+      <p class="tiny" id="profileInfo">Not set yet — tap to add your name & details.</p>
+    </div>
+    <div class="card">
+      <div class="section-title">Install / Save</div>
+      <button class="btn-ghost btn-sm" id="howInstall" style="margin-bottom:8px">How to Save to Home Screen</button>
+      <p class="tiny">If the green bar does nothing, you're likely in an in-app browser (WhatsApp/Instagram). Tap the button above for the exact steps, or open the link in Chrome/Safari.</p>
+    </div>
+    <div class="card">
+      <div class="section-title">About</div>
+      <p class="tiny">FieldSales Pro — prototype for a wholesaler sales rep handling mixed cash / part / credit sales. Seeded with sample Nestlé Ghana products & hypothetical retailers. Prices are placeholders — edit in code/README.</p>
+    </div>
+  </section>
+
+  <nav>
+    <button data-v="dash" class="active"><span class="ic">▦</span>Home</button>
+    <button data-v="sale"><span class="ic">＋</span>New Sale</button>
+    <button data-v="ret"><span class="ic">☷</span>Retailers</button>
+    <button data-v="led"><span class="ic">₵</span>Ledger</button>
+    <button data-v="more"><span class="ic">⋮</span>More</button>
+  </nav>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- How to install modal -->
+<div class="modal-bg" id="installHelpModal">
+  <div class="modal">
+    <h3>How to Save / Install</h3>
+    <div id="installHelpBody"></div>
+    <div class="row" style="gap:8px;margin-top:14px">
+      <button class="btn-primary" style="flex:1" id="installHelpClose">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- Install / not-saved banner -->
+<div id="installBar" class="hidden" style="position:sticky;top:0;z-index:30;background:#0F766E;color:#fff;padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 6px rgba(0,0,0,.2)">
+  <div style="flex:1">
+    <div style="font-weight:700;font-size:13px">Install FieldSales Pro 📲</div>
+    <div style="font-size:11px;opacity:.9">Save it to your phone — works offline, no browser needed.</div>
+  </div>
+  <button id="installBtn" style="background:#fff;color:#0F766E;border:none;border-radius:8px;padding:8px 12px;font-weight:700;font-size:13px">Install</button>
+  <button id="installClose" style="background:transparent;color:#fff;border:none;font-size:18px;line-height:1">×</button>
+</div>
+
+<!-- Daily report modal -->
+<div class="modal-bg" id="dailyModal">
+  <div class="modal">
+    <h3>Daily Report</h3>
+    <label>Select date</label>
+    <input id="dDate" type="date" />
+    <div id="dailyBody" style="margin-top:10px"></div>
+    <div class="row" style="gap:8px;margin-top:14px">
+      <button class="btn-ghost" style="flex:1" id="dailyCopy">Copy / Share</button>
+      <button class="btn-primary" style="flex:1" id="dailyClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Profile modal -->
+<div class="modal-bg" id="profileModal">
+  <div class="modal">
+    <h3>My Profile</h3>
+    <label>Full Name</label>
+    <input id="pName" placeholder="e.g. Kwame Mensah" />
+    <label>Staff / Employee ID</label>
+    <input id="pId" placeholder="e.g. WH-014" />
+    <label>Company / Distributor</label>
+    <input id="pCompany" placeholder="e.g. Nestlé GH Distributor" />
+    <label>Territory / Route</label>
+    <input id="pTerr" placeholder="e.g. Accra Central" />
+    <label>Phone</label>
+    <input id="pPhone" placeholder="0XX XXX XXXX" />
+    <div class="row" style="gap:8px;margin-top:14px">
+      <button class="btn-ghost" style="flex:1" id="profileCancel">Cancel</button>
+      <button class="btn-primary" style="flex:1" id="profileSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Retailer modal -->
+<div class="modal-bg" id="retModal">
+  <div class="modal">
+    <h3>New Retailer</h3>
+    <label>Shop / Business name</label>
+    <input id="rName" placeholder="e.g. Makola Prime Ventures" />
+    <label>Phone</label>
+    <input id="rPhone" placeholder="0XX XXX XXXX" />
+    <label>Location</label>
+    <input id="rLoc" placeholder="e.g. Accra, Makola" />
+    <label>Credit limit (GHS)</label>
+    <input id="rLimit" type="number" value="2000" />
+    <div class="row" style="gap:8px;margin-top:14px">
+      <button class="btn-ghost" style="flex:1" id="retCancel">Cancel</button>
+      <button class="btn-primary" style="flex:1" id="retSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Payment modal -->
+<div class="modal-bg" id="payModal">
+  <div class="modal">
+    <h3 id="payTitle">Record Payment</h3>
+    <label>Amount received (GHS)</label>
+    <input id="payAmt" type="number" value="0" />
+    <label>Note</label>
+    <input id="payNote" placeholder="e.g. part payment" />
+    <div class="row" style="gap:8px;margin-top:14px">
+      <button class="btn-ghost" style="flex:1" id="payCancel">Cancel</button>
+      <button class="btn-primary" style="flex:1" id="paySave">Record</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ======== FieldSales Pro — OFFLINE-FIRST (no remote control plane) ========
+   Owner: Providers Consultancy (ekowsam.eb@gmail.com).
+   This app is 100% local: NO sales data, NO heartbeats, NO kill-switch leave the
+   device. It ALWAYS opens, online or offline. Hosted on GitHub Pages so it is
+   reachable on networks that block *.netlify.app. */
+(function(){
+  const APP_VERSION='2.0-gh';
+  // App simply opens. No server check, no lock, no external calls.
+  window.__fsproReady = Promise.resolve(true);
+})();
+
+/* ---------------- DATA ---------------- */
+const SEED_PRODUCTS = [
+  {id:'p01',name:'MILO (tin)',cat:'Beverages',price:18},
+  {id:'p02',name:'CHOCOMILO (sachet)',cat:'Beverages',price:2},
+  {id:'p03',name:'CHOCOLIM (bar)',cat:'Confectionery',price:3},
+  {id:'p04',name:'NESCAFÉ 3-in-1',cat:'Beverages',price:5},
+  {id:'p05',name:'NESCAFÉ Classic (jar)',cat:'Beverages',price:42},
+  {id:'p06',name:'CEREVITA Porridge',cat:'Cereals',price:12},
+  {id:'p07',name:'CERELAC Maize/Milk',cat:'Infant Nutrition',price:15},
+  {id:'p08',name:'CERELAC Wheat/Milk',cat:'Infant Nutrition',price:15},
+  {id:'p09',name:'LACTOGEN Infant Formula',cat:'Infant Nutrition',price:65},
+  {id:'p10',name:'NAN Infant Formula',cat:'Infant Nutrition',price:75},
+  {id:'p11',name:'NIDO Milk Powder',cat:'Dairy',price:55},
+  {id:'p12',name:'IDEAL Evaporated Milk',cat:'Dairy',price:8},
+  {id:'p13',name:'CARNATION Filled Milk',cat:'Dairy',price:9},
+  {id:'p14',name:'CARNATION Tea Creamer',cat:'Dairy',price:7},
+  {id:'p15',name:'MAGGI Bouillon (cube pack)',cat:'Culinary',price:10},
+  {id:'p16',name:'MAGGI Seasoning (Nkrakra)',cat:'Culinary',price:6},
+  {id:'p17',name:'MAGGI Ketchup / Cold Sauce',cat:'Culinary',price:14},
+  {id:'p18',name:'NESTLÉ Hot Cocoa',cat:'Beverages',price:16},
+];
+const SEED_RETAILERS = [
+  {id:'r01',name:'Makola Prime Ventures',phone:'0244123456',loc:'Accra, Makola',limit:5000},
+  {id:'r02',name:'Kumasi Central Stores',phone:'0205987654',loc:'Kumasi, Adum',limit:8000},
+  {id:'r03',name:'Cape Coast Link Suppliers',phone:'0277112233',loc:'Cape Coast',limit:3500},
+  {id:'r04',name:'Tema Harbour Mini-Mart',phone:'0233445566',loc:'Tema',limit:4000},
+  {id:'r05',name:'Spintex Family Shop',phone:'0556677889',loc:'Accra, Spintex',limit:2500},
+  {id:'r06',name:'Ashaiman Wholesale Corner',phone:'0267889900',loc:'Ashaiman',limit:3000},
+];
+/* ---------------- STATE ---------------- */
+const KEY='wsr_app_v1';
+let DB = load();
+function load(){
+  try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.products)return d;}catch(e){}
+  return {rep:{name:'',phone:'',company:'',territory:'',employeeId:''},products:SEED_PRODUCTS.slice(),retailers:SEED_RETAILERS.slice(),sales:[],payments:[]};
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
+function repName(){return (DB.rep&&DB.rep.name)?DB.rep.name:'the Sales Rep';}
+function renderProfileInfo(){
+  const r=DB.rep||{};const el=$('#profileInfo');
+  if(r.name){el.innerHTML=`<b>${r.name}</b>${r.company?(' · '+r.company):''}${r.territory?('<br>'+r.territory):''}${r.phone?('<br>'+r.phone):''}${r.employeeId?(' · ID '+r.employeeId):''}`;}
+  else{el.textContent='Not set yet — tap to add your name & details.';}
+  // header line
+  const sub=$('#repLine');
+  if(r.name){sub.textContent=(r.company?r.company+' · ':'')+repName()+(r.territory?(' ('+r.territory+')'):'');}
+  else{sub.textContent='Wholesaler Sales Rep · Demo (Nestlé GH)';}
+}
+const money=n=>'GHS '+Number(n||0).toLocaleString(undefined,{maximumFractionDigits:2});
+function todayStr(){const d=new Date();return d.toISOString().slice(0,10);}
+function dueDate(days){const d=new Date();d.setDate(d.getDate()+Number(days||7));return d.toISOString().slice(0,10);}
+function balanceOf(rid){
+  let b=0;
+  DB.sales.filter(s=>s.retailerId===rid).forEach(s=>{
+    if(s.mode==='cash')b+=0; else b+=(s.total - (s.amountPaid||0));
+  });
+  DB.payments.filter(p=>p.retailerId===rid).forEach(p=>b-=p.amount);
+  return b;
+}
+function retailerDue(rid){
+  // earliest due date among unpaid credit/part sales
+  let due=null;
+  DB.sales.filter(s=>s.retailerId===rid && s.mode!=='cash').forEach(s=>{
+    if(balanceOf(rid)>0 && s.dueDate){ if(!due||s.dueDate<due)due=s.dueDate; }
+  });
+  return due;
+}
+/* ---------------- UI ---------------- */
+const $=s=>document.querySelector(s);
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);}
+function nav(v){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
+  ['dash','sale','ret','led','more'].forEach(x=>$('#view-'+x).classList.toggle('hidden',x!==v));
+  if(v==='dash')renderDash(); if(v==='ret')renderRet(); if(v==='led')renderLed();
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>nav(b.dataset.v));
+
+function renderDash(){
+  const t=todayStr();
+  let sales=0,cash=0,credit=0;
+  DB.sales.filter(s=>s.date===t).forEach(s=>{
+    sales+=s.total; cash+=(s.amountPaid||0); if(s.mode!=='cash')credit+=(s.total-(s.amountPaid||0));
+  });
+  let out=0; DB.retailers.forEach(r=>out+=Math.max(0,balanceOf(r.id)));
+  $('#dSales').textContent=Math.round(sales).toLocaleString();
+  $('#dCash').textContent=Math.round(cash).toLocaleString();
+  $('#dCredit').textContent=Math.round(credit).toLocaleString();
+  $('#dOut').textContent=Math.round(out).toLocaleString();
+  const debtors=DB.retailers.map(r=>({r,b:Math.max(0,balanceOf(r.id))})).filter(x=>x.b>0).sort((a,b)=>b.b-a.b).slice(0,5);
+  $('#topDebtors').innerHTML = debtors.length? debtors.map(x=>`
+    <div class="list-item"><div><div class="li-name">${x.r.name}</div><div class="li-sub">${x.r.loc}</div></div>
+    <div class="li-bal" style="color:var(--red)">${money(x.b)}</div></div>`).join('')
+    : '<div class="empty">No outstanding balances.</div>';
+  // week snapshot
+  const now=new Date(); const dow=now.getDay(); const mon=new Date(now); mon.setDate(now.getDate()-(dow===0?6:dow-1));
+  const monStr=mon.toISOString().slice(0,10);
+  const sun=new Date(mon); sun.setDate(mon.getDate()+6); const sunStr=sun.toISOString().slice(0,10);
+  let wkDue=0,wkRemit=0;
+  DB.retailers.forEach(r=>{
+    const b=Math.max(0,balanceOf(r.id)); const due=retailerDue(r.id);
+    if(b>0 && due && due<=sunStr) wkDue+=b;
+  });
+  DB.sales.filter(s=>s.date>=monStr).forEach(s=>wkRemit+=(s.amountPaid||0));
+  $('#wkDue').textContent=money(wkDue);
+  $('#wkRemit').textContent=money(wkRemit);
+}
+
+/* New sale */
+function fillRetailers(){const s=$('#sRetailer');s.innerHTML='<option value="">Select retailer…</option>'+DB.retailers.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');}
+function productOptions(sel){return '<option value="">Product…</option>'+DB.products.map(p=>`<option value="${p.id}" ${sel===p.id?'selected':''}>${p.name} — ${money(p.price)}</option>`).join('');}
+function addItemRow(){const d=document.createElement('div');d.className='item-row';d.innerHTML=`
+  <select class="pi">${productOptions('')}</select>
+  <input class="pq" type="number" min="1" value="1" placeholder="Qty"/>
+  <input class="pp" type="number" placeholder="Price" />
+  <div class="line-total"></div>`;
+  d.querySelector('.pi').onchange=e=>{const p=DB.products.find(x=>x.id===e.target.value);if(p)d.querySelector('.pp').value=p.price;calcTotal();};
+  d.querySelector('.pq').oninput=calcTotal; d.querySelector('.pp').oninput=calcTotal;
+  $('#sItems').appendChild(d);calcTotal();
+}
+function calcTotal(){let t=0;document.querySelectorAll('#sItems .item-row').forEach(r=>{
+  const q=+r.querySelector('.pq').value||0;const p=+r.querySelector('.pp').value||0;const lt=q*p;
+  r.querySelector('.line-total').textContent=money(lt);t+=lt;});
+  $('#sTotal').textContent=money(t);}
+$('#addItem').onclick=addItemRow;
+$('#sMode').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  $('#sMode').querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+  $('#paidWrap').classList.toggle('hidden',b.dataset.m==='cash');
+  if(b.dataset.m==='cash')$('#sPaid').value='0';
+});
+$('#saveSale').onclick=()=>{
+  const rid=$('#sRetailer').value; if(!rid){toast('Select a retailer');return;}
+  const items=[];let total=0;
+  document.querySelectorAll('#sItems .item-row').forEach(r=>{
+    const pid=r.querySelector('.pi').value;const q=+r.querySelector('.pq').value||0;const p=+r.querySelector('.pp').value||0;
+    if(pid&&q>0){const pr=DB.products.find(x=>x.id===pid);items.push({productId:pid,name:pr?pr.name:'?',qty:q,price:p,lineTotal:q*p});total+=q*p;}
+  });
+  if(!items.length){toast('Add at least one product');return;}
+  const mode=$('#sMode').querySelector('.active').dataset.m;
+  const paid=mode==='cash'?total:(+($('#sPaid').value)||0);
+  if(mode!=='cash'&&paid>total){toast('Paid cannot exceed total');return;}
+  const bal=total-paid;
+  DB.sales.push({id:'s'+Date.now(),date:todayStr(),retailerId:rid,items,total,mode,amountPaid:paid,
+    balance:bal,dueDate:mode==='cash'?null:dueDate($('#sTerms').value)});
+  save();
+  // reset
+  $('#sItems').innerHTML='';addItemRow();$('#sPaid').value='0';$('#sTerms').value='7';
+  $('#sMode').querySelectorAll('button').forEach(x=>x.classList.remove('active'));$('#sMode').querySelector('[data-m=cash]').classList.add('active');$('#paidWrap').classList.add('hidden');
+  nav('dash');toast('Sale saved · '+money(total)+(mode!=='cash'?' · bal '+money(bal):''));
+};
+
+/* Retailers */
+function renderRet(){
+  $('#retList').innerHTML=DB.retailers.map(r=>{
+    const b=Math.max(0,balanceOf(r.id));const due=retailerDue(r.id);const over=due&&due<todayStr();
+    return `<div class="list-item"><div><div class="li-name">${r.name}</div>
+      <div class="li-sub">${r.phone} · ${r.loc} · limit ${money(r.limit)}</div></div>
+      <div style="text-align:right"><div class="li-bal" style="color:${b>0?'var(--red)':'var(--green)'}">${money(b)}</div>
+      ${b>0?`<span class="pill ${over?'over':'due'}">${over?'OVERDUE':'due '+due}</span>`:'<span class="pill ok">clear</span>'}</div></div>`;
+  }).join('') || '<div class="empty">No retailers yet.</div>';
+}
+$('#addRet').onclick=()=>{$('#retModal').classList.add('show');};
+$('#retCancel').onclick=()=>$('#retModal').classList.remove('show');
+$('#retSave').onclick=()=>{
+  const name=$('#rName').value.trim();if(!name){toast('Enter name');return;}
+  DB.retailers.push({id:'r'+Date.now(),name,phone:$('#rPhone').value,loc:$('#rLoc').value,limit:+$('#rLimit').value||0});
+  save();$('#retModal').classList.remove('show');
+  $('#rName').value='';$('#rPhone').value='';$('#rLoc').value='';$('#rLimit').value='2000';
+  renderRet();toast('Retailer added');
+};
+
+/* Ledger */
+let ledF='all';
+$('#ledFilter').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  $('#ledFilter').querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');ledF=b.dataset.f;renderLed();});
+function renderLed(){
+  const rows=DB.retailers.map(r=>{const b=Math.max(0,balanceOf(r.id));const due=retailerDue(r.id);return{r,b,due};}).filter(x=>x.b>0);
+  let list=rows;
+  if(ledF==='over')list=rows.filter(x=>x.due&&x.due<todayStr());
+  if(ledF==='due')list=rows.filter(x=>x.due&&x.due>=todayStr());
+  list.sort((a,b)=> (b.due||'').localeCompare(a.due||''));
+  $('#ledList').innerHTML=list.length? list.map(x=>{
+    const over=x.due&&x.due<todayStr();
+    return `<div class="list-item"><div><div class="li-name">${x.r.name}</div>
+      <div class="li-sub">${x.due?('due '+x.due):''} ${over?'· OVERDUE':''}</div></div>
+      <div style="text-align:right"><div class="li-bal" style="color:var(--red)">${money(x.b)}</div>
+      <button class="btn-ghost btn-sm payBtn" data-r="${x.r.id}" style="margin-top:4px">Collect</button></div></div>`;
+  }).join('') : '<div class="empty">No balances match this filter.</div>';
+  document.querySelectorAll('.payBtn').forEach(b=>b.onclick=()=>openPay(b.dataset.r));
+}
+let payRid=null;
+function openPay(rid){payRid=rid;const r=DB.retailers.find(x=>x.id===rid);const b=Math.max(0,balanceOf(rid));
+  $('#payTitle').textContent='Collect from '+r.name+' ('+money(b)+')';$('#payAmt').value=b;$('#payNote').value='';$('#payModal').classList.add('show');}
+$('#payCancel').onclick=()=>$('#payModal').classList.remove('show');
+$('#paySave').onclick=()=>{
+  const amt=+$('#payAmt').value||0;if(amt<=0){toast('Enter amount');return;}
+  DB.payments.push({id:'p'+Date.now(),date:todayStr(),retailerId:payRid,amount:amt,note:$('#payNote').value});
+  save();$('#payModal').classList.remove('show');renderLed();renderDash();toast('Payment recorded · '+money(amt));
+};
+
+/* Reports */
+$('#rSunday').onclick=()=>{
+  const now=new Date();const dow=now.getDay();const mon=new Date(now);mon.setDate(now.getDate()-(dow===0?6:dow-1));
+  const sun=new Date(mon);sun.setDate(mon.getDate()+6);const sunStr=sun.toISOString().slice(0,10);
+  const due=DB.retailers.map(r=>({r,b:Math.max(0,balanceOf(r.id)),due:retailerDue(r.id)})).filter(x=>x.b>0&&x.due&&x.due<=sunStr);
+  let msg='SUNDAY SETTLEMENT — '+repName()+'\n'+(DB.rep.company?('('+DB.rep.company+')\n'):'\n')+(due.length?due.map(x=>`• ${x.r.name} — ${money(x.b)} (due ${x.due})`).join('\n'):'Nothing due this week. 🎉');
+  msg+='\n\nTOTAL TO COLLECT: '+money(due.reduce((s,x)=>s+x.b,0));
+  alert(msg);
+};
+$('#rMonday').onclick=()=>{
+  const now=new Date();const dow=now.getDay();const mon=new Date(now);mon.setDate(now.getDate()-(dow===0?6:dow-1));const monStr=mon.toISOString().slice(0,10);
+  let cash=0;DB.sales.filter(s=>s.date>=monStr).forEach(s=>cash+=s.amountPaid||0);
+  alert('MONDAY REMITTANCE — '+repName()+'\n'+(DB.rep.company?('('+DB.rep.company+')\n'):'\n')+'Cash collected this week: '+money(cash)+'\n\nRemit this amount to the company (minus any company float).');
+};
+$('#rAll').onclick=()=>{
+  const rows=DB.retailers.map(r=>({r,b:Math.max(0,balanceOf(r.id)),due:retailerDue(r.id)})).filter(x=>x.b>0).sort((a,b)=>b.b-a.b);
+  let msg='FULL LEDGER\n\n'+(rows.length?rows.map(x=>`• ${x.r.name} — ${money(x.b)} ${x.due?('due '+x.due):''}`).join('\n'):'All clear.');
+  alert(msg);
+};
+
+/* Daily report */
+function buildDaily(dateStr){
+  const sales=DB.sales.filter(s=>s.date===dateStr);
+  let total=0,cash=0,part=0,credit=0,collected=0,newCredit=0;
+  const byRet={};
+  sales.forEach(s=>{
+    total+=s.total; collected+=(s.amountPaid||0);
+    if(s.mode==='cash'){cash+=s.total;}
+    else if(s.mode==='part'){part+=(s.total-(s.amountPaid||0)); credit+=0; newCredit+=(s.total-(s.amountPaid||0)); collected+=(s.amountPaid||0);}
+    else {credit+=s.total; newCredit+=s.total;}
+    const r=DB.retailers.find(x=>x.id===s.retailerId);const rn=r?r.name:'(unknown)';
+    if(!byRet[rn])byRet[rn]={n:0,total:0,paid:0};
+    byRet[rn].n++;byRet[rn].total+=s.total;byRet[rn].paid+=(s.amountPaid||0);
+  });
+  // payments received that day (toward old balances)
+  let paidOld=0;
+  DB.payments.filter(p=>p.date===dateStr).forEach(p=>paidOld+=p.amount);
+  const lines=Object.keys(byRet).sort().map(rn=>{
+    const x=byRet[rn];const bal=x.total-x.paid;
+    return `• ${rn} — ${money(x.total)} (${x.n} sale${x.n>1?'s':''})${bal>0?' · bal '+money(bal):''}`;
+  });
+  let html=`<div class="row" style="justify-content:space-between"><span class="li-sub">${dateStr}</span><span class="li-bal">${money(total)}</span></div>`;
+  html+=`<div class="tiny" style="margin:6px 0 2px">Total Sales: <b>${money(total)}</b></div>`;
+  html+=`<div class="tiny">Cash Sales: <b>${money(cash)}</b> · Part (credit given): <b>${money(part)}</b> · Full Credit: <b>${money(credit)}</b></div>`;
+  html+=`<div class="tiny">Cash Collected (incl. part paid): <b>${money(collected)}</b> · Old balances paid: <b>${money(paidOld)}</b></div>`;
+  html+=`<div class="tiny" style="margin-top:4px">New Credit Outstanding: <b style="color:#DC2626">${money(newCredit)}</b></div>`;
+  html+=`<div class="section-title" style="margin-top:8px">By Retailer</div>`;
+  html+= lines.length? lines.join('') : '<div class="empty">No sales recorded on this date.</div>';
+  $('#dailyBody').innerHTML=html;
+  // stash for copy
+  window._dailyTxt=`DAILY REPORT — ${repName()}${DB.rep.company?' ('+DB.rep.company+')':''}\nDate: ${dateStr}\n\nTotal Sales: ${money(total)}\nCash Sales: ${money(cash)}\nPart (credit given): ${money(part)}\nFull Credit: ${money(credit)}\nCash Collected: ${money(collected)}\nOld Balances Paid: ${money(paidOld)}\nNew Credit Outstanding: ${money(newCredit)}\n\nBy Retailer:\n`+(lines.length?lines.map(l=>l.replace(/^• /,'')).join('\n'):'No sales recorded.');
+}
+$('#rDaily').onclick=()=>{const d=$('#dDate');if(!d.value)d.value=todayStr();buildDaily(d.value);$('#dailyModal').classList.add('show');};
+$('#dDate').onchange=()=>{if($('#dDate').value)buildDaily($('#dDate').value);};
+$('#dailyClose').onclick=()=>$('#dailyModal').classList.remove('show');
+$('#dailyCopy').onclick=async()=>{
+  const txt=window._dailyTxt||'';try{await navigator.clipboard.writeText(txt);toast('Report copied — paste to WhatsApp');}
+  catch(e){if(navigator.share){navigator.share({text:txt});}else{toast('Copy not supported');}}
+};
+
+/* Data */
+$('#expJson').onclick=()=>{const b=JSON.stringify(DB,null,2);download('fieldsales_backup.json',b);toast('Backup exported');};
+$('#expCsv').onclick=()=>{
+  let csv='Date,Retailer,Mode,Total,Paid,Balance,Items\n';
+  DB.sales.forEach(s=>{const r=DB.retailers.find(x=>x.id===s.retailerId);
+    const items=s.items.map(i=>`${i.name}x${i.qty}`).join('; ');
+    csv+=`${s.date},"${r?r.name:''}",${s.mode},${s.total},${s.amountPaid},${s.balance},"${items}"\n`;});
+  download('fieldsales_sales.csv',csv);toast('CSV exported');
+};
+$('#impJson').onclick=()=>{const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const f=e.target.files[0];const rd=new FileReader();rd.onload=()=>{try{DB=JSON.parse(rd.result);save();toast('Backup imported');renderDash();}catch(err){toast('Invalid file');}};rd.readAsText(f);};inp.click();};
+function download(name,content){const blob=new Blob([content],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();}
+
+/* Profile */
+$('#editProfile').onclick=()=>{
+  const r=DB.rep||{};
+  $('#pName').value=r.name||'';$('#pPhone').value=r.phone||'';$('#pCompany').value=r.company||'';
+  $('#pTerr').value=r.territory||'';$('#pId').value=r.employeeId||'';
+  $('#profileModal').classList.add('show');
+};
+$('#profileCancel').onclick=()=>$('#profileModal').classList.remove('show');
+$('#profileSave').onclick=()=>{
+  DB.rep={name:$('#pName').value.trim(),phone:$('#pPhone').value.trim(),company:$('#pCompany').value.trim(),territory:$('#pTerr').value.trim(),employeeId:$('#pId').value.trim()};
+  save();$('#profileModal').classList.remove('show');renderProfileInfo();renderDash();toast('Profile saved');
+};
+
+/* init */
+window.__fsproReady.then(ok=>{
+  if(!ok) return; // app is killed/locked — leave the lock screen up
+  fillRetailers();addItemRow();renderProfileInfo();renderDash();
+  $('#dashDaily').onclick=()=>{const d=$('#dDate');d.value=todayStr();buildDaily(d.value);$('#dailyModal').classList.add('show');};
+});
+
+/* Install / save to phone */
+let deferredPrompt=null;
+const installBar=$('#installBar');
+function showInstallBar(){if(!window.matchMedia('(display-mode: standalone)').matches && !localStorage.getItem('installDismissed'))installBar.classList.remove('hidden');}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;showInstallBar();});
+window.addEventListener('appinstalled',()=>{installBar.classList.add('hidden');toast('Installed! Opens from home screen');});
+function detectUA(){
+  const ua=navigator.userAgent||'';const w=window;
+  const isIOS=/iP(hone|ad|od)/.test(ua)||(/Macintosh/.test(ua)&&'ontouchend'in document);
+  const isAndroid=/Android/.test(ua);
+  // in-app browser (WhatsApp, Instagram, FB, Telegram, LinkedIn, etc.)
+  const inApp=/FBAN|FBAV|Instagram|WhatsApp|Telegram|LinkedIn|Twitter|Line|Snapchat|wv\/|MMS\//.test(ua) || (w.matchMedia&&w.matchMedia('(display-mode:browser)').matches&&/(iPhone|Android)/.test(ua)&&!/Safari\//.test(ua));
+  return {isIOS,isAndroid,inApp};
+}
+function installHelpHTML(){
+  const {isIOS,isAndroid,inApp}=detectUA();
+  const LINK = location.origin;  // works on any host (GitHub Pages, Netlify, local)
+  let h='';
+  if(inApp){
+    h+='<p class="tiny" style="color:#DC2626;font-weight:700">You are inside an in-app browser (e.g. WhatsApp/Instagram). Install buttons are disabled here.</p>';
+    h+='<p class="tiny"><b>Fix (30 seconds):</b> Tap the ⋮/Share menu in this in-app browser → choose <b>“Open in Chrome”</b> (Android) or <b>“Open in Safari”</b> (iPhone). Then follow the steps below.</p>';
+  }
+  if(isIOS){
+    h+='<div class="section-title">iPhone (Safari)</div>';
+    h+='<p class="tiny">1. Make sure the page is open in <b>Safari</b> (not WhatsApp/Instagram).<br>2. Tap the <b>Share ⬆️</b> icon at the bottom.<br>3. Scroll and tap <b>“Add to Home Screen”</b>.<br>4. Name it <b>FieldSales Pro</b> → Add.<br>5. The icon is now on your home screen — opens like an app, offline.</p>';
+  } else if(isAndroid){
+    h+='<div class="section-title">Android (Chrome)</div>';
+    h+='<p class="tiny">1. Open the link in <b>Chrome</b>.<br>2. Tap <b>⋮</b> (top-right) → <b>“Add to Home screen”</b>.<br>3. Or tap the <b>⊕ install icon</b> in the address bar.<br>4. Tap <b>Add/Install</b> → icon appears on home screen.</p>';
+  } else {
+    h+='<div class="section-title">Desktop</div>';
+    h+='<p class="tiny">On a laptop, open the link in Chrome/Edge → address bar shows an <b>⊕ install icon</b> (or ⋮ → Install). For your phone, send yourself the link and open it in Chrome/Safari.</p>';
+  }
+  h+='<p class="tiny" style="margin-top:6px">After install, the app opens full-screen, works offline, and your data stays on the phone. Back up via More → Export Backup (JSON) regularly.</p>';
+  return h;
+}
+$('#howInstall').onclick=()=>{$('#installHelpBody').innerHTML=installHelpHTML();$('#installHelpModal').classList.add('show');};
+$('#installHelpClose').onclick=()=>$('#installHelpModal').classList.remove('show');
+$('#installBtn').onclick=async()=>{
+  const {inApp}=detectUA();
+  if(inApp){$('#installHelpBody').innerHTML=installHelpHTML();$('#installHelpModal').classList.add('show');return;}
+  if(deferredPrompt){try{deferredPrompt.prompt();const r=await deferredPrompt.userChoice;}catch(e){}$('#installHelpBody').innerHTML=installHelpHTML();$('#installHelpModal').classList.add('show');deferredPrompt=null;installBar.classList.add('hidden');return;}
+  // no native prompt available -> show explicit steps
+  $('#installHelpBody').innerHTML=installHelpHTML();$('#installHelpModal').classList.add('show');
+};
+$('#installClose').onclick=()=>{installBar.classList.add('hidden');localStorage.setItem('installDismissed','1');};
+if(!window.matchMedia('(display-mode: standalone)').matches){setTimeout(showInstallBar,1500);}
+window.__fsproReady.then(ok=>{ if(ok && (!DB.rep||!DB.rep.name)){setTimeout(()=>$('#editProfile').click(),600);} });
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{try{
+  navigator.serviceWorker.register('sw.js').then(reg=>{ if(reg&&reg.update) reg.update(); }).catch(()=>{});
+  navigator.serviceWorker.addEventListener('message',(ev)=>{ if(ev&&ev.data&&ev.data.type==='SW_UPDATED'){ location.reload(); } });
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{ location.reload(); });
+}catch(e){}});}
+</script>
+</body>
+</html>

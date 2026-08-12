@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" width="500" height="200">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a73e8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d47a1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a73e8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00bcd4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background - optional transparent -->
+  
+  <!-- ===== LOGO ICON (Left) ===== -->
+  <g transform="translate(30, 30)">
+    <!-- Outer hexagon/circle shape -->
+    <rect x="0" y="0" width="110" height="110" rx="24" ry="24" fill="url(#grad1)" />
+    
+    <!-- Stylized "P" letter -->
+    <text x="55" y="77" font-family="Georgia, 'Times New Roman', serif" font-size="62" font-weight="bold" fill="#ffffff" text-anchor="middle">P</text>
+    
+    <!-- Small accent dot -->
+    <circle cx="95" cy="15" r="8" fill="#00bcd4" />
+  </g>
+
+  <!-- ===== COMPANY NAME (Right) ===== -->
+  <g transform="translate(165, 50)">
+    <!-- Main brand name -->
+    <text x="0" y="0" font-family="'Segoe UI', Arial, Helvetica, sans-serif" font-size="36" font-weight="800" fill="#0d47a1" letter-spacing="1">Providers</text>
+    
+    <!-- Divider line -->
+    <rect x="0" y="14" width="280" height="3" rx="1.5" fill="url(#grad2)" />
+    
+    <!-- Subtitle -->
+    <text x="0" y="45" font-family="'Segoe UI', Arial, Helvetica, sans-serif" font-size="16" font-weight="600" fill="#1a73e8" letter-spacing="3">CONSULTANCY</text>
+    
+    <!-- Tagline -->
+    <text x="0" y="68" font-family="'Segoe UI', Arial, Helvetica, sans-serif" font-size="11" font-weight="400" fill="#666666" letter-spacing="1">Digital Marketing &amp; AI Workflow Automation</text>
+  </g>
+</svg>
